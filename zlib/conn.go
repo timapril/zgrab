@@ -51,6 +51,7 @@ type Conn struct {
 	onlyExportsDH       bool
 	chromeCiphers       bool
 	chromeNoDHE         bool
+	onlyChromeDH        bool
 	firefoxCiphers      bool
 	firefoxNoDHECiphers bool
 	safariCiphers       bool
@@ -95,6 +96,10 @@ func (c *Conn) SetExportsDHOnly() {
 
 func (c *Conn) SetChromeCiphers() {
 	c.chromeCiphers = true
+}
+
+func (c *Conn) SetChromeDHEOnly() {
+	c.onlyChromeDH = true
 }
 
 func (c *Conn) SetChromeNoDHECiphers() {
@@ -220,6 +225,10 @@ func (c *Conn) TLSHandshake() error {
 	}
 	if c.chromeNoDHE {
 		tlsConfig.CipherSuites = ztls.ChromeNoDHECiphers
+		tlsConfig.ForceSuites = true
+	}
+	if c.onlyChromeDH {
+		tlsConfig.CipherSuites = ztls.ChromeDHECiphers
 		tlsConfig.ForceSuites = true
 	}
 	if c.firefoxCiphers {

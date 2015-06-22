@@ -88,6 +88,7 @@ type Config struct {
 	FirefoxNoDHE  bool
 	ChromeOnly    bool
 	ChromeNoDHE   bool
+	ChromeDHEOnly bool
 	SafariOnly    bool
 	SafariNoDHE   bool
 	NoSNI         bool

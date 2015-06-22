@@ -77,6 +77,7 @@ func init() {
 
 	flag.BoolVar(&config.ChromeOnly, "chrome-ciphers", false, "Send Chrome Ordered Cipher Suites")
 	flag.BoolVar(&config.ChromeNoDHE, "chrome-no-dhe-ciphers", false, "Send chrome ciphers minus DHE suites")
+	flag.BoolVar(&config.ChromeDHEOnly, "chrome-dhe-ciphers", false, "Send only DHE ciphers supported by Chrome")
 
 	flag.BoolVar(&config.FirefoxOnly, "firefox-ciphers", false, "Send Firefox Ordered Cipher Suites")
 
