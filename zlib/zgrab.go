@@ -23,10 +23,10 @@ import (
 	"github.com/zmap/zgrab/ztools/scada/bacnet"
 	"github.com/zmap/zgrab/ztools/scada/dnp3"
 	"github.com/zmap/zgrab/ztools/scada/fox"
+	"github.com/zmap/zgrab/ztools/scada/siemens"
 	"github.com/zmap/zgrab/ztools/ssh"
 	"github.com/zmap/zgrab/ztools/telnet"
 	"github.com/zmap/zgrab/ztools/ztls"
-	"github.com/zmap/zgrab/ztools/scada/siemens"
 )
 
 type Grab struct {
@@ -34,17 +34,19 @@ type Grab struct {
 	Domain         string
 	Time           time.Time
 	Data           GrabData
+	Grabs          map[string]GrabData
 	Error          error
 	ErrorComponent string
 }
 
 type encodedGrab struct {
-	IP             string    `json:"ip"`
-	Domain         string    `json:"domain,omitempty"`
-	Time           string    `json:"timestamp"`
-	Data           *GrabData `json:"data,omitempty"`
-	Error          *string   `json:"error,omitempty"`
-	ErrorComponent string    `json:"error_component,omitempty"`
+	IP             string              `json:"ip"`
+	Domain         string              `json:"domain,omitempty"`
+	Time           string              `json:"timestamp"`
+	Data           *GrabData           `json:"data,omitempty"`
+	Grabs          map[string]GrabData `json:"grabs,omitempty"`
+	Error          *string             `json:"error,omitempty"`
+	ErrorComponent string              `json:"error_component,omitempty"`
 }
 
 type GrabData struct {
@@ -63,7 +65,7 @@ type GrabData struct {
 	BACNet       *bacnet.Log           `json:"bacnet,omitempty"`
 	Fox          *fox.FoxLog           `json:"fox,omitempty"`
 	DNP3         *dnp3.DNP3Log         `json:"dnp3,omitempty"`
-	S7           *siemens.S7Log         `json:"s7,omitempty"`
+	S7           *siemens.S7Log        `json:"s7,omitempty"`
 	Telnet       *telnet.TelnetLog     `json:"telnet,omitempty"`
 }
 
@@ -79,6 +81,7 @@ func (g *Grab) MarshalJSON() ([]byte, error) {
 		Domain:         g.Domain,
 		Time:           time,
 		Data:           &g.Data,
+		Grabs:          g.Grabs,
 		Error:          errString,
 		ErrorComponent: g.ErrorComponent,
 	}
@@ -93,6 +96,7 @@ func (g *Grab) UnmarshalJSON(b []byte) error {
 	}
 	g.IP = net.ParseIP(eg.IP)
 	g.Domain = eg.Domain
+	g.Grabs = eg.Grabs
 	if g.Time, err = time.Parse(time.RFC3339, eg.Time); err != nil {
 		return err
 	}
