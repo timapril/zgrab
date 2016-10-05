@@ -30,6 +30,8 @@ import (
 	"github.com/zmap/zgrab/ztools/x509"
 	"github.com/zmap/zgrab/ztools/zlog"
 	"github.com/zmap/zgrab/ztools/ztls"
+	"net/http"
+	_ "net/http/pprof"
 )
 
 // Command-line flags
@@ -345,6 +347,10 @@ func init() {
 }
 
 func main() {
+	go func() {
+		zlog.Info(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	runtime.GOMAXPROCS(config.GOMAXPROCS)
 	decoder := zlib.NewGrabTargetDecoder(inputFile, config.LookupDomain)
 	marshaler := zlib.NewGrabMarshaler()
