@@ -18,6 +18,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"io"
+	"net"
 	"strings"
 	"time"
 
@@ -107,6 +108,8 @@ type Config struct {
 	Timeout            time.Duration
 	Senders            uint
 	ConnectionsPerHost uint
+	LocalAddress       net.Addr
+	LocalAddressSet    bool
 
 	// DNS
 	LookupDomain bool
